@@ -1,0 +1,9 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+install_requires=[
+    "importlib_resources ; python_version<'3.7'"
+]
+build-backend = "setuptools.build_meta"
