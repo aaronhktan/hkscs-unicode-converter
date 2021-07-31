@@ -18,19 +18,20 @@ def _format_key_value_pair(key, value):
     if value.startswith("U+"):
         value = value[2:]
 
+    values = tuple([value])
+
     # Special case for Ê̄, Ê̌, ê̄, ê̌ (<00CA,0304>, <00CA,030C>, <00EA,0304>, <00EA,030C>)
-    # Strip the "<" and ">" characters, then parse each of the codepoints to a Unicode string
+    # Strip the "<" and ">" characters, then put each codepoint in the list
     if value.startswith("<") and value.endswith(">"):
         value = value[1:-1]
-        values = map(lambda x: int(x, base=16), value.split(","))
-        value = "".join([chr(x) for x in values])
+        values = tuple(value.split(","))
 
-    return (key, value)
+    return (key, values)
 
 
 def _create_mapping(items, columns_from, column_to):
     # Each key in this mapping should be a single codepoint, represented as all-caps hexadecimal string with no prefix
-    # Each value should be EITHER a single codepoint represented in the same way as a key, OR a string (like Ê̄)
+    # Each value should be a list of corresponding codepoints (represented the same way as the keys)
     mapping = {}
 
     for item in items:
@@ -90,27 +91,24 @@ def convert_char(char):
     # Get the hex version of the codepoint for this char, without the "0x" prefix
     codepoint = "%X" % ord(char)
 
-    # Find the corresponding value from the loaded data files
-    corresponding_value = None
+    # Find the matching codepoints from the loaded data files
+    matching_codepoints = None
     for mapping in _mappings:
         if codepoint in mapping:
-            corresponding_value = mapping[codepoint]
+            matching_codepoints = mapping[codepoint]
 
-    # Leave the character unchanged if no corresponding codepoint is found
-    if not corresponding_value:
+    # Leave the character unchanged if no corresponding codepoints are found
+    if not matching_codepoints:
         return char
 
-    # The corresponding value might be a character
-    # In which case, return it
-    if isinstance(corresponding_value, str) and len(corresponding_value) == 1:
-        return corresponding_value
-
-    # Otherwise, find the correct character if the returned value is a codepoint
-    # (Assume that any string that parses to a hex value is a valid codepoint)
+    # Try to parse the returned list of matching codepoints
     try:
-        return chr(int(corresponding_value, 16))
+        return "".join([chr(int(codepoint, 16)) for codepoint in matching_codepoints])
     except:
         return char
+
+    # Last resort: give up and return the original character
+    return char
 
 
 def convert_string(string):
