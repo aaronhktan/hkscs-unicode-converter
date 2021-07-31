@@ -4,71 +4,8 @@ import json
 
 from . import data
 
-_files = [
-    {
-        "name": "gccs",
-        "type": "tsv",
-        "stream": pkg_resources.open_text(data, "gccs.tsv"),
-        "config": {
-            "column_from_keys": ["Big5Alternate"],
-            "column_key_to": "Unicode",
-        },
-    },
-    {
-        "name": "hkscs1999",
-        "type": "tsv",
-        "stream": pkg_resources.open_text(data, "hkscs1999.tsv"),
-        "config": {
-            "column_from_keys": ["UnicodeAlternate"],
-            "column_key_to": "Unicode",
-        },
-    },
-    {
-        "name": "hkscs2001",
-        "type": "tsv",
-        "stream": pkg_resources.open_text(data, "hkscs2001.tsv"),
-        "config": {
-            "column_from_keys": ["UnicodeAlternate"],
-            "column_key_to": "Unicode",
-        },
-    },
-    {
-        "name": "hkscs2001_2",
-        "type": "tsv",
-        "stream": pkg_resources.open_text(data, "hkscs2001_2.tsv"),
-        "config": {
-            "column_from_keys": ["ISO/IEC_10646-1:1993", "ISO/IEC_10646-1:2000"],
-            "column_key_to": "ISO/IEC_10646-2:2001",
-        },
-    },
-    {
-        "name": "hkscs2004",
-        "type": "tsv",
-        "stream": pkg_resources.open_text(data, "hkscs2004.tsv"),
-        "config": {
-            "column_from_keys": ["ISO/IEC_10646-1:1993", "ISO/IEC_10646-1:2000"],
-            "column_key_to": "ISO/IEC_10646:2003_Amendment",
-        },
-    },
-    {
-        "name": "hkscs2008",
-        "type": "tsv",
-        "stream": pkg_resources.open_text(data, "hkscs2008.tsv"),
-        "config": {
-            "column_from_keys": ["ISO/IEC_10646-1:1993", "ISO/IEC_10646-1:2000"],
-            "column_key_to": "ISO/IEC_10646:2003_Amendment",
-        },
-    },
-    {
-        "name": "hkscs2016",
-        "type": "json",
-        "stream": pkg_resources.open_text(data, "hkscs2016.json"),
-        "config": {
-            "column_from_keys": ["codepoint"],
-            "column_key_to": "char",
-        },
-    },
-]
+with pkg_resources.open_text(data, "config.json") as config:
+    _files = json.load(config)
 
 
 def _format_key_value_pair(key, value):
@@ -112,12 +49,12 @@ def _process_tsv(stream):
     headers = next(reader)  # First line contains header titles
 
     for row in reader:
-        data = {}
+        item = {}
         for index, value in enumerate(row):
             if index >= len(headers):
                 break
-            data[headers[index]] = value
-        items.append(data)
+            item[headers[index]] = value
+        items.append(item)
 
     return items
 
@@ -127,10 +64,11 @@ _mappings = []
 for file in _files:
     # Each of the _process methods should return a list of dicts
     # Each dict represents a row; each key in the dict is the column name
-    if file["type"] == "tsv":
-        data = _process_tsv(file["stream"])
-    else:
-        data = json.load(file["stream"])
+    with pkg_resources.open_text(data, f'{file["name"]}.{file["type"]}') as f:
+        if file["type"] == "tsv":
+            items = _process_tsv(f)
+        else:
+            items = json.load(f)
 
     # There might be multiple columns that we are interested in converting FROM
     # (e.g. in HKSCS2004,
@@ -139,7 +77,7 @@ for file in _files:
     columns_from = file["config"]["column_from_keys"]
     column_to = file["config"]["column_key_to"]
 
-    _mappings.append(_create_mapping(data, columns_from, column_to))
+    _mappings.append(_create_mapping(items, columns_from, column_to))
 
 
 def convert_char(char):

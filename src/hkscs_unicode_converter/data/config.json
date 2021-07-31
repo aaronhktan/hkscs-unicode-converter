@@ -1,0 +1,57 @@
+[{
+        "name": "gccs",
+        "type": "tsv",
+        "config": {
+            "column_from_keys": ["Big5Alternate"],
+            "column_key_to": "Unicode"
+        }
+    },
+    {
+        "name": "hkscs1999",
+        "type": "tsv",
+        "config": {
+            "column_from_keys": ["UnicodeAlternate"],
+            "column_key_to": "Unicode"
+        }
+    },
+    {
+        "name": "hkscs2001",
+        "type": "tsv",
+        "config": {
+            "column_from_keys": ["UnicodeAlternate"],
+            "column_key_to": "Unicode"
+        }
+    },
+    {
+        "name": "hkscs2001_2",
+        "type": "tsv",
+        "config": {
+            "column_from_keys": ["ISO/IEC_10646-1:1993", "ISO/IEC_10646-1:2000"],
+            "column_key_to": "ISO/IEC_10646-2:2001"
+        }
+    },
+    {
+        "name": "hkscs2004",
+        "type": "tsv",
+        "config": {
+            "column_from_keys": ["ISO/IEC_10646-1:1993", "ISO/IEC_10646-1:2000"],
+            "column_key_to": "ISO/IEC_10646:2003_Amendment"
+        }
+    },
+    {
+        "name": "hkscs2008",
+        "type": "tsv",
+        "config": {
+            "column_from_keys": ["ISO/IEC_10646-1:1993", "ISO/IEC_10646-1:2000"],
+            "column_key_to": "ISO/IEC_10646:2003_Amendment"
+        }
+    },
+    {
+        "name": "hkscs2016",
+        "type": "json",
+        "config": {
+            "column_from_keys": ["codepoint"],
+            "column_key_to": "char"
+        }
+    }
+]
