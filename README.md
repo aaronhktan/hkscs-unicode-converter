@@ -12,7 +12,7 @@
 '啱'
 >>> converter.convert_char("\uE7D4") # Convert from Unicode literal
 '啱'
->> hex(ord(converter.convert_char(chr(0xE7D4)))) # Get corresponding codepoint
+>>> hex(ord(converter.convert_char(chr(0xE7D4)))) # Get corresponding codepoint
 '0x5571'
 ```
 
