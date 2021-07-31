@@ -1,6 +1,6 @@
 # hkscs-unicode-converter
 
-**hkscs-unicode-converter** is a utility for converting HKSCS characters assigned to Private Use Areas of Unicode to their equivalents in Unicode 4.1 onwwards.
+**hkscs-unicode-converter** is a utility for converting HKSCS characters assigned to Private Use Areas of Unicode to their equivalents in Unicode 4.1 onwards. Inspired by the [npm module](https://www.npmjs.com/package/hkscs_unicode_converter) of the same name.
 
 ```python
 >>> from hkscs_unicode_converter import converter
