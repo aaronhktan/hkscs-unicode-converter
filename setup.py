@@ -14,6 +14,7 @@ setuptools.setup(
     url="https://github.com/aaronhktan/hkscs-unicode-converter",
     project_urls={
         "Bug Tracker": "https://github.com/aaronhktan/hkscs-unicode-converter/issues",
+        "Source Code": "https://github.com/aaronhktan/hkscs-unicode-converter",
     },
     classifiers=[
         "Programming Language :: Python :: 3",

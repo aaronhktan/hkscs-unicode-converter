@@ -18,7 +18,7 @@
 
 ## Installing
 
-hkscs-unicode-converter is available on PyPI and officially supports Python 3.7+:
+hkscs-unicode-converter is [available on PyPI](https://pypi.org/project/hkscs-unicode-converter/1.0.0/) and officially supports Python 3.7+:
 
 ```console
 $ python3 -m pip install hkscs-unicode-converter
