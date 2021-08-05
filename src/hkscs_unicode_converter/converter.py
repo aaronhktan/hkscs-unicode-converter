@@ -9,7 +9,7 @@ with pkg_resources.open_text(data, "config.json") as config:
 
 
 def _format_key_value_pair(key, value):
-    if not key or not value:
+    if (not key or not value) or (key == value):
         return (None, None)
 
     # Strip off "U+" from the start of the keys and values
@@ -89,23 +89,40 @@ def convert_char(char):
         raise ValueError("char argument must be exactly length 1")
 
     # Get the hex version of the codepoint for this char, without the "0x" prefix
-    codepoint = "%X" % ord(char)
+    original_codepoint = "%X" % ord(char)
 
     # Find the matching codepoints from the loaded data files
-    matching_codepoints = None
+    # Must loop through each of the files, because a codepoint may be remapped twice
+    # e.g. EC77 (GCCS) -> 4CA4 (HKSCS-1999) -> 9FD0 (HKSCS-2016)
+    matched = original_codepoint
     for mapping in _mappings:
-        if codepoint in mapping:
-            matching_codepoints = mapping[codepoint]
+        if matched in mapping:
+            matched = mapping[matched]
+            if len(matched) > 1:  # This should only occur for the <00CA,0304> edgecases
+                break
+            else:
+                matched = matched[0]
 
     # Leave the character unchanged if no corresponding codepoints are found
-    if not matching_codepoints:
+    if not matched or matched == original_codepoint:
         return char
 
-    # Try to parse the returned list of matching codepoints
-    try:
-        return "".join([chr(int(codepoint, 16)) for codepoint in matching_codepoints])
-    except:
-        return char
+    # At this point, there are three possibilities:
+    # - matched is a tuple length 2, for sequences like <00CA,0304>
+    # - matched is a str length 1 and contains a Unicode literal, e.g. "亠"
+    # - matched is a str length > 1, and contains a Unicode codepoint e.g. "39FB"
+    if type(matched) is tuple and len(matched) > 1:
+        try:
+            return "".join([chr(int(codepoint, 16)) for codepoint in matched])
+        except:
+            return char
+    elif type(matched) is str and len(matched) == 1:
+        return matched
+    elif type(matched) is str and len(matched) > 1:
+        try:
+            return chr(int(matched, 16))
+        except:
+            return char
 
     # Last resort: give up and return the original character
     return char
