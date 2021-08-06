@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="hkscs-unicode-converter",
-    version="1.0.0",
+    version="1.1.0",
     author="Aaron Tan",
     author_email="hi@aaronhktan.com",
     description="Convert HKSCS codepoints to corresponding new codepoints in Unicode 4.1 onwards",

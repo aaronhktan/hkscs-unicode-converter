@@ -714,7 +714,7 @@ class TestValid(TestCase):
             "F56D": "9E1F",
             "F56E": "9EC4",
             "F56F": "6B6F",
-            "F570": "9F9C",
+            "F570": "9F9C", # Is this right? HKSCS-1999 maps F570 to 9F9C, but HKSCS-2001 maps it to F907
             "F571": "4E37",
             "F573": "961D",
             "F574": "6237",
